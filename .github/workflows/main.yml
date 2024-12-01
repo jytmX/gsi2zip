@@ -14,11 +14,19 @@ jobs:
     - name: Install dependencies
       run: |
         sudo apt update && \
-        sudo apt install zip brotli python3 python3-aiohttp file xz-utils ngrok -y
+        sudo apt install zip brotli python3 python3-aiohttp file xz-utils -y
+
+    - name: Install Ngrok
+      run: |
+        wget https://bin.equinox.io/c/bNyj1mQVY4c/ngrok-v3-stable-linux-amd64.tgz
+        tar -xvf ngrok-v3-stable-linux-amd64.tgz
+        sudo mv ngrok /usr/local/bin
+
+    - name: Authenticate Ngrok
+      run: ngrok config add-authtoken ${{ secrets.NGROK_AUTH_TOKEN }}
 
     - name: Start Python Server
-      run: |
-        python3 your_script.py &
+      run: python3 web.py &
 
     - name: Start Ngrok
       run: ngrok http 1337 > ngrok.log & sleep 5
