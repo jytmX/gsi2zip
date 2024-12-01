@@ -1,34 +1,28 @@
-name: Run Python File
+name: Run Python Server with Ngrok
 
 on:
-  push:
-    branches:
-      - main
-  workflow_dispatch: # Memungkinkan menjalankan workflow secara manual
+  workflow_dispatch:
 
 jobs:
-  run-python:
+  run-server:
     runs-on: ubuntu-latest
 
     steps:
     - name: Checkout code
       uses: actions/checkout@v3
 
-    - name: Install system packages
+    - name: Install dependencies
       run: |
-        sudo apt update
-        sudo apt install -y zip brotli python3 python3-aiohttp file xz-utils
+        sudo apt update && \
+        sudo apt install zip brotli python3 python3-aiohttp file xz-utils ngrok -y
 
-    - name: Set up Python
-      uses: actions/setup-python@v4
-      with:
-        python-version: '3.9' # Sesuaikan versi Python jika perlu
-
-    - name: Install Python dependencies
+    - name: Start Python Server
       run: |
-        if [ -f requirements.txt ]; then
-          pip install -r requirements.txt
-        fi
+        python3 your_script.py &
 
-    - name: Run Python script
-      run: python web.py
+    - name: Start Ngrok
+      run: ngrok http 1337 > ngrok.log & sleep 5
+
+    - name: Display Ngrok URL
+      run: |
+        grep -o 'https://[0-9a-z]*\.ngrok\.io' ngrok.log
