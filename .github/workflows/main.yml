@@ -33,4 +33,4 @@ jobs:
 
     - name: Display Ngrok URL
       run: |
-        grep -o 'https://[0-9a-z]*\.ngrok\.io' ngrok.log
+        grep -Eo 'https://[a-zA-Z0-9._-]+\.ngrok\.io' ngrok.log
