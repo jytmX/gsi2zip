@@ -1,0 +1,34 @@
+name: Run Python File
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch: # Memungkinkan menjalankan workflow secara manual
+
+jobs:
+  run-python:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Install system packages
+      run: |
+        sudo apt update
+        sudo apt install -y zip brotli python3 python3-aiohttp file xz-utils
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.9' # Sesuaikan versi Python jika perlu
+
+    - name: Install Python dependencies
+      run: |
+        if [ -f requirements.txt ]; then
+          pip install -r requirements.txt
+        fi
+
+    - name: Run Python script
+      run: python web.py
